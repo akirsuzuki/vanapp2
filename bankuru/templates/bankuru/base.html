@@ -1,0 +1,184 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bankuru</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="{% static 'material_admin/vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="{% static 'material_admin/vendor/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" href="{% static 'material_admin/css/fontastic.css' %}">
+    <!-- Google fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="{% static 'material_admin/css/style.default.css' %}" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="{% static 'material_admin/css/custom.css' %}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="{% static 'material_admin/img/favicon.ico' %}">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+<!-- Chartを使うために追加 -->
+    <script src="{% static 'material_admin/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'material_admin/js/charts-custom.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="{% static 'material_admin/js/charts-home.js' %}"></script>
+
+    <!-- オリジナルJavaScript -->
+    <script src="{% static 'original_js/debt_sort.js' %}"></script>
+
+  </head>
+  <body>
+    <div class="page">
+      <!-- Main Navbar-->
+      <header class="header">
+        <nav class="navbar">
+          <!-- Search Box-->
+          <div class="search-box">
+            <button class="dismiss"><i class="icon-close"></i></button>
+            <form id="searchForm" action="#" role="search">
+              <input type="search" placeholder="What are you looking for..." class="form-control">
+            </form>
+          </div>
+          <div class="container-fluid">
+            <div class="navbar-holder d-flex align-items-center justify-content-between">
+              <!-- Navbar Header-->
+              <div class="navbar-header">
+                <!-- Navbar Brand --><a href="{% url 'bankuru:index' %}" class="navbar-brand d-none d-sm-inline-block">
+                  <div class="brand-text d-none d-lg-inline-block"><strong>Bankuru</strong></div>
+                  <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>Bankuru</strong></div></a>
+                <!-- Toggle Button--><a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+              </div>
+              <!-- Navbar Menu -->
+              <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                <!-- Search-->
+                <li class="nav-item d-flex align-items-center"><a id="search" href="#"><i class="icon-search"></i></a></li>
+                <!-- Messages                        -->
+                <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope-o"></i><span class="badge bg-orange badge-corner">3</span></a>
+                  <ul aria-labelledby="notifications" class="dropdown-menu">
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-body">
+                          <h3 class="h5">Jason Doe</h3><span>Sent You Message</span>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-body">
+                          <h3 class="h5">Frank Williams</h3><span>Sent You Message</span>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                        <div class="msg-body">
+                          <h3 class="h5">Ashley Wood</h3><span>Sent You Message</span>
+                        </div></a></li>
+                    <li><a rel="nofollow" href="#" class="dropdown-item all-notifications text-center"> <strong>すべてのメッセージを見る</strong></a></li>
+                  </ul>
+                </li>
+                <!-- Logout    -->
+                {% if user.is_authenticated %}
+                    <li class="nav-item">{{ user.get_username }}</li>
+                    <li class="nav-item">　　<a href="{% url 'bankuru:logout' %}">Logout</a></li>
+                {% else %}
+                    <li>登録</li>
+                    <li class="nav-item"><a href="{% url 'bankuru:login' %}"> <span class="d-none d-sm-inline"><button type="button" class="btn btn-primary btn-sm">Login</button></span></a></li>
+                {% endif %}
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <div class="page-content d-flex align-items-stretch"> 
+        <!-- Side Navbar -->
+        <nav class="side-navbar">
+          <!-- Sidebar Header-->
+          <div class="sidebar-header d-flex align-items-center">
+            <div class="avatar"><img src="{% static 'img/logo-transparent.png' %}" alt="..." class="img-fluid rounded-circle"></div>
+            <div class="title">
+              <h1 class="h4">株式会社サンプル</h1>
+              <p>Slogan</p>
+            </div>
+          </div>
+          <!-- Sidebar Navidation Menus--><span class="heading">メインメニュー</span>
+          <ul class="list-unstyled">
+                    <li class="active"><a href="{% url 'bankuru:index' %}"> <i class="icon-home"></i>ホーム</a></li>
+                    <li><a href="{% url 'bankuru:debt_list' %}"> <i class="icon-grid"></i>借入一覧表</a></li>
+                    <li><a href="{% url 'bankuru:charts' %}"> <i class="fa fa-bar-chart"></i>借入推移グラフ</a></li>
+                    <li><a href="forms.html"> <i class="icon-padnote"></i>詳細分析</a></li>
+                    <li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i>インフォメーション</a>
+                      <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                        <li><a href="#">お知らせ一覧</a></li>
+                        <li><a href="#">ニュース</a></li>
+                        <li><a href="#">アーカイブ</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="http://127.0.0.1:8000/admin/" target="blank"> <i class="icon-interface-windows"></i>管理者ログイン</a></li>
+          </ul>
+          <hr>
+          <span class="heading">その他</span>
+          <ul class="list-unstyled">
+            <li> <a href="#"> <i class="icon-flask"></i>機能のご提案</a></li>
+            <li> <a href="#"> <i class="icon-screen"></i>会計事務所検索</a></li>
+            <li> <a href="#"> <i class="icon-mail"></i>お問い合わせ</a></li>
+          </ul>
+          <hr>
+          <span class="heading"></span>
+          <ul class="list-unstyled">
+            <li> <a href="#"> <i class="icon-flask"></i>About</a></li>
+            <li> <a href="{% url 'bankuru:terms_of_use' %}"> <i class="icon-screen"></i>利用規約</a></li>
+            <li> <a href="#"> <i class="icon-mail"></i>プライバシーポリシー</a></li>
+          </ul>
+        </nav>
+        <div class="content-inner">
+          <!-- Page Header-->
+          <header class="page-header">
+            <div class="container-fluid">
+              <h2 class="no-margin-bottom">{{ title }}</h2>
+            </div>
+          </header>
+          <!-- Dashboard Counts Section-->
+
+          {% block content %}
+          {% endblock %}
+
+          <script>
+            $(document).ready(function(){
+              {% block jquery %}
+              {% endblock %}
+            })
+          </script>
+
+          <!-- Page Footer-->
+          <footer class="main-footer">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-6">
+                  <p>VanCreworth &copy; 2018-</p>
+                </div>
+                <div class="col-sm-6 text-right">
+                  <p>Produced by VanCreworth</p>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+    <!-- JavaScript files-->
+    <script src="{% static 'material_admin/vendor/popper.js/umd/popper.min.js' %}"> </script>
+    <script src="{% static 'material_admin/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'material_admin/vendor/jquery.cookie/jquery.cookie.js' %}"> </script>
+    <script src="{% static 'material_admin/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
+    <!-- Main File-->
+    <script src="{% static 'material_admin/js/front.js' %}"></script>
+
+  </body>
+</html>

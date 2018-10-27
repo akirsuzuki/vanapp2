@@ -1,0 +1,210 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+
+{% endblock %}
+
+<script>
+{% block jquery %}
+var endpoint = '{% url "bankuru:chart-data" %}'
+var defaultData = []
+var labels = []
+$.ajax({
+  method: "GET",
+  url: endpoint,
+  success: function(data){
+    labels = data.labels
+    defaultData = data.default
+    setChart()
+  },
+  error: function(error_data){
+  }
+})
+
+function setChart(){
+  var ctx = document.getElementById("myChart").getContext('2d');
+  var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: defaultData,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+                  ],
+                borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+                  ],
+              borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    })
+
+}
+
+
+{% endblock jquery %}
+</script>
+
+{% block content %}
+<!-- 一つ目のセクション -->
+<section class="dashboard-counts no-padding-bottom">
+  <div class="container-fluid">
+    <div class="row bg-white has-shadow">
+      <!-- Item -->
+      <div class="col-xl-4 col-sm-8">
+        <div class="item d-flex align-items-center">
+          <div class="title" style="text-align:center"><span>借入金残高</span><br><small>(千円)</small>
+          </div>
+          <div class="number"><strong>{{ current_total_balance|intcomma }}</strong></div>
+        </div>
+      </div>
+      <!-- Item -->
+      <div class="col-xl-4 col-sm-8">
+        <div class="item d-flex align-items-center">
+          <div class="title" style="text-align:center"><span>月返済額</span><br><small>(千円)</small>
+          </div>
+          <div class="number"><strong>{{ current_total_payment|intcomma }}</strong></div>
+        </div>
+      </div>
+      <!-- Item -->
+      <div class="col-xl-4 col-sm-8">
+        <div class="item d-flex align-items-center">
+          <div class="title" style="text-align:center"><span>加重平均<br>利息</span>
+          </div>
+          <span>
+          <div class="number"><strong>{{ current_weighted_average_interest }}</strong><small>%</small></div>
+          
+          <div class="number">(<strong>{{current_total_interest|intcomma}}</strong><small>円</small>)</div>
+        </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 二つ目のセクション -->
+<section class="dashboard-header">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Work Amount  -->
+      <div class="col-lg-6">
+        <div class="work-amount card">
+          <div class="card-close">
+            <div class="dropdown">
+              <button type="button" id="closeCard1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+              <div aria-labelledby="closeCard1" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>残高シェア</h3><small>銀行別残高シェア</small>
+            <div class="chart text-center">
+              <div class="text"><strong>{{ current_total_balance|intcomma }}</strong><br><span>千円</span></div>
+              <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Overdue    -->
+      <div class="col-lg-6">
+              <div class="overdue card">
+                  <div class="card-close">
+                      <div class="dropdown">
+                          <button type="button" id="closeCard3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                          <div aria-labelledby="closeCard3" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+                      </div>
+                  </div>
+                  <div class="card-body">
+                      <h3>チャートサンプル</h3><small>加重平均利息の推移など</small>
+                      <div class="number text-center">25,000千円</div>
+                      <div class="chart">
+                          <canvas id="lineChart1">                               </canvas>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+    </div>
+  </div>
+</section>
+<!-- 三つ目のセクション -->
+<section class="tables">   
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-close">
+            <div class="dropdown">
+              <button type="button" id="closeCard1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+              <div aria-labelledby="closeCard1" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+            </div>
+          </div>
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">借入一覧     <small>（直近5件まで表示）</small></h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>金融機関名</th>
+                    <th>返済期間</th>
+                    <th>元本</th>
+                    <th>金利</th>
+                    <th>協会/プロパー</th>
+                    <th>現在残高（シェア）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in data %}
+                  <tr>                   
+                    <th scope="row">{{ item.bank_name }}</th>
+                    <td>{{item.first_payment_date.year }}.{{item.first_payment_date.month }}
+                       - {{item.last_payment_date.year }}.{{item.last_payment_date.month }}
+                       ({{ item.payment_terms }}回)</td>
+                    <td>{{ item.principal|intcomma }}円</td>
+                    <td>{{ item.interest }}%</td>
+                    <td>プロパー</td>
+                    <td>{{ item.get_current_0|intcomma }}千円（{{ item.get_share }}%）</td>
+                    {% empty %}
+                    借入がありません。            
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <hr>
+              <a href="{% url 'bankuru:debt_list' %}" class="btn btn-primary">
+                  全ての借入を一覧で見る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+{% endblock content %}

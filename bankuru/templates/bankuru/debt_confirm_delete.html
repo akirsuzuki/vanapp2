@@ -1,0 +1,19 @@
+{% extends 'bankuru/base.html' %}
+{% block title %}
+借入データの削除
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <p>{{ object }} を削除していいですか?</p>
+      <form method="post">
+        <button class="btn btn-danger">削除する</button>
+        <a href="javascript:void(0);" onclick="window.history.back();" class="btn btn-outline-secondary">戻る</a>
+        {% csrf_token %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

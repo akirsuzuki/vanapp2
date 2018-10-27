@@ -1,0 +1,262 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+
+{% endblock %}
+
+<script>
+{% block jquery %}
+var endpoint = '/api/data/'
+$.ajax({
+  method: "GET",
+  url: endpoint,
+  success: function(data){
+    console.log(data)
+  },
+  error: function(error_data){
+    console.log("error")
+    console.log(error_data)
+  }
+})
+
+
+{% endblock %}
+</script>
+
+
+{% block content %}
+<section class="dashboard-counts no-padding-bottom">
+    <div class="container-fluid">
+      <div class="row bg-white has-shadow">
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+          <div class="item d-flex align-items-center">
+            <div class="title" style="text-align:center"><span>当月残高<br><small>(千円)</small><Br>全{{count}}件</span>
+            </div>
+            <div class="number"><strong>{{ total_current_balance|intcomma }}</strong></div>
+          </div>
+        </div>
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+          <div class="item d-flex align-items-center">
+            <div class="title" style="text-align:center"><span>月返済額</span><br><small>(千円)</small>
+            </div>
+            <div class="number"><strong>70</strong></div>
+          </div>
+        </div>
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+          <div class="item d-flex align-items-center">
+            <div class="title" style="text-align:center"><span>加重平均<br>利息</span>
+            </div>
+            <div class="number"><strong>1.85</strong><small>%</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Client Section-->
+  <section class="dashboard-header">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Work Amount  -->
+        <div class="col-lg-6">
+          <div class="work-amount card">
+            <div class="card-close">
+              <div class="dropdown">
+                <button type="button" id="closeCard1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                <div aria-labelledby="closeCard1" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3>残高シェア</h3>
+              <div class="chart text-center">
+                <div class="text"><strong>25,000</strong><br><span>千円</span></div>
+                <!-- グラフの表示 -->
+                <!-- <canvas id="lineChart1"></canvas> -->
+                <canvas id="myChart" width="400" height="400"></canvas>
+                
+                <script>
+                var ctx = document.getElementById("myChart").getContext('2d');
+                var defaultData = [1,2,3,4,5,6]
+                var labels = ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"]
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '# of Votes',
+                            data: defaultData,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                });
+                </script>
+
+
+
+                <!-- グラフの表示 終わり-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Overdue    -->
+        <div class="col-lg-6">
+                <div class="overdue card">
+                    <div class="card-close">
+                        <div class="dropdown">
+                            <button type="button" id="closeCard3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                            <div aria-labelledby="closeCard3" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3>チャートサンプル</h3><small>加重平均利息の推移など</small>
+                        <div class="number text-center">25,000千円</div>
+                        <div class="chart">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+      </div>
+    </div>
+  </section>
+
+
+  
+
+
+
+  <!-- Projects Section-->
+  <section class="projects no-padding-top">
+    <div class="container-fluid">
+      {% for item in debt_data %}
+        <div class="project">
+            <div class="row bg-white has-shadow">
+                <div class="left-col col-lg-4 d-flex align-items-center justify-content-between">
+                  <div class="project-title d-flex align-items-center">
+                      <div class="text">
+                      <h3 class="h4">{{ item.bank_name }}</h3>
+                      {{ item.first_payment_date.year }} / {{ item.first_payment_date.month }} - 
+                      {{ item.last_payment_date.year }} / {{ item.last_payment_date.month }} ({{ item.payment_terms }}回)<Br>
+                        {{ item.interest }}%  プロパー</div>
+                  </div>
+                </div>
+                <div class="left-col col-lg-4 d-flex align-items-center justify-content-between">
+                    <div class="project-title d-flex align-items-center">
+                      <div class="text">
+                          <h3 class="h4">元本：{{ item.principal|intcomma }}<small>円</small></h3>
+                          当月末残高: {{ item.get_current|intcomma }}<small>円</small><br>
+                          月返済額: ＠{{ item.second_payment_amount|intcomma }}<small>円/月</small>
+                          
+                      </div>  
+                    </div>
+                </div>
+                <div class="right-col col-lg-4 d-flex align-items-center">
+                <div class="project-progress">
+                    <div class="text">返済進捗:55%</div>
+                    <div class="progress">
+                        <div role="progressbar" style="width: 55%; height: 12px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" class="progress-bar bg-red"></div>
+                    </div>
+                </div>
+                </div>  
+            </div>
+        </div>
+        <br>
+      {% endfor %} 
+
+
+    </div>
+  </section>
+
+  <!-- Feeds Section-->
+  <section class="feeds no-padding-top">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Trending Articles-->
+        <div class="col-lg-6">
+          <div class="articles card">
+            <div class="card-close">
+              <div class="dropdown">
+                <button type="button" id="closeCard4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                <div aria-labelledby="closeCard4" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+              </div>
+            </div>
+            <div class="card-header d-flex align-items-center">
+              <h2 class="h3">メッセージ</h2>
+              <div class="badge badge-rounded bg-green">4 New       </div>
+            </div>
+            <div class="card-body no-padding">
+              <div class="item d-flex align-items-center">
+                <div class="text"><a href="#">
+                    <h3 class="h5">セキュリティアップデート</h3></a><small>Posted on 5th June 2017 by Frank Williams.   </small></div>
+              </div>
+              <div class="item d-flex align-items-center">
+                <div class="text"><a href="#">
+                    <h3 class="h5">直近の取引状況をご確認ください。</h3></a><small>Posted on 5th June 2017 by Ashley Wood.   </small></div>
+              </div>
+              <div class="item d-flex align-items-center">
+                <div class="text"><a href="#">
+                    <h3 class="h5">同業他社との比較レポートをご覧ください。</h3></a><small>Posted on 5th June 2017 by Jason Doe.   </small></div>
+              </div>
+              <div class="item d-flex align-items-center">
+                <div class="text"><a href="#">
+                    <h3 class="h5">決算書の評価を受けてください。</h3></a><small>Posted on 5th June 2017 by Sam Martinez.   </small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Check List -->
+        <div class="col-lg-6">
+          <div class="checklist card">
+            <div class="card-close">
+              <div class="dropdown">
+                <button type="button" id="closeCard5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                <div aria-labelledby="closeCard5" class="dropdown-menu dropdown-menu-right has-shadow"><a href="#" class="dropdown-item remove"> <i class="fa fa-times"></i>Close</a><a href="#" class="dropdown-item edit"> <i class="fa fa-gear"></i>Edit</a></div>
+              </div>
+            </div>
+            <div class="card-header d-flex align-items-center">           
+              <h2 class="h3">ニュース</h2>
+            </div>
+            <div class="card-body no-padding">
+              <div class="item d-flex">
+                <label for="input-1">東日本銀行が金融庁より行政指導を受けました。</label>
+              </div>
+              <div class="item d-flex">
+                <label for="input-2">三菱東京銀行が、早期退職を募りました。</label>
+              </div>
+              <div class="item d-flex">
+                <label for="input-3">保証協会の予算が採択されました。</label>
+              </div>
+              <div class="item d-flex">
+                <label for="input-4">ふくおかFGの業績推移について。</label>
+              </div>
+              <div class="item d-flex">
+                <label for="input-5">楽天銀行がFintechの新サービスを発表しました。</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+{% endblock content %}

@@ -1,0 +1,181 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<section class="tables">   
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">借入詳細</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>金融機関名</th>
+                    <th>返済期間</th>
+                    <th>元本</th>
+                    <th>金利</th>
+                    <th>協会/プロパー</th>
+                    <th>現在残高</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>                   
+                    <th scope="row">{{ object.bank_name }}</th>
+                    <td>{{object.first_payment_date.year }}.{{object.first_payment_date.month }}
+                       - {{object.last_payment_date.year }}.{{object.last_payment_date.month }}
+                       ({{ object.payment_terms }}回)</td>
+                    <td>{{ object.principal|intcomma }}円</td>
+                    <td>{{ object.interest }}%</td>
+                    <td></td>
+                    <td>{{ object.get_current_0|intcomma }}円</td>
+                  </tr>
+                </tbody>
+              </table>
+              <hr>
+              <a href="{% url 'bankuru:debt_update' object.id %}" class="btn btn-primary">
+                編集</a> <a href="{% url 'bankuru:debt_delete' object.id %}" class="btn btn-danger">
+                  削除</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">残高推移（1年） 千円</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>1ヶ月後</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                    <th>12</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>                   
+                    <td>{{ object.get_current_1|intcomma }}</td>
+                    <td>{{ object.get_current_2|intcomma }}</td>
+                    <td>{{ object.get_current_3|intcomma }}</td>
+                    <td>{{ object.get_current_4|intcomma }}</td>
+                    <td>{{ object.get_current_5|intcomma }}</td>
+                    <td>{{ object.get_current_6|intcomma }}</td>
+                    <td>{{ object.get_current_7|intcomma }}</td>
+                    <td>{{ object.get_current_8|intcomma }}</td>
+                    <td>{{ object.get_current_9|intcomma }}</td>
+                    <td>{{ object.get_current_10|intcomma }}</td>
+                    <td>{{ object.get_current_11|intcomma }}</td>
+                    <td>{{ object.get_current_12|intcomma }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">残高推移（隔年・5年） 千円</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>                   
+                    <td>{{ object.get_current_12|intcomma }}</td>
+                    <td>{{ object.get_current_24|intcomma }}</td>
+                    <td>{{ object.get_current_36|intcomma }}</td>
+                    <td>{{ object.get_current_48|intcomma }}</td>
+                    <td>{{ object.get_current_60|intcomma }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>     
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">ノート</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <p>借入時の背景を記載</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header d-flex align-items-center">
+            <h3 class="h4">データ情報</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>登録者</th>
+                    <th>登録日時</th>
+                    <th>更新日時</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>                   
+                    <td>{{ object.user }}</td>
+                    <td>{{ object.created_at }}</td>
+                    <td>{{ object.updated_at }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</section>
+{% endblock %}

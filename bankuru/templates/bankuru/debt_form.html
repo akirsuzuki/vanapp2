@@ -1,0 +1,77 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+{% if object.pk %}{{ object.bank_name }}{% else %}
+{{ title }}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<script>
+console.log(form_class)
+</script>
+<form method="post">
+    <section class="dashboard-header">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row">                       
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center">
+                                <h3 class="h4">借入情報</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr>
+                                            <th>User</th>
+                                            <td>{{form.user}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>金融機関</th>
+                                            <td>{{form.bank_name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>元本</th>
+                                            <td>{{form.principal}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>初回返済日</th>
+                                            <td>{{form.first_payment_date}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>最終返済日</th>
+                                            <td>{{form.last_payment_date}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>初回返済額</th>
+                                            <td>{{form.first_payment_amount}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>2回目以降返済額</th>
+                                            <td>{{form.second_payment_amount}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>返済回数</th>
+                                            <td>{{form.payment_terms}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>金利</th>
+                                            <td>{{form.interest}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <hr>
+                                <button class="btn btn-primary">保存</button>                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% csrf_token %}
+    </section>
+
+</form>
+
+{% endblock %}

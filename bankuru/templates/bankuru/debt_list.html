@@ -1,0 +1,154 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<section class="tables">   
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header d-flex align-items-center p-3">
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <h3 class="h4"><a href="#tab1" class="nav-link" data-toggle="tab">借入一覧</a></h3>
+                </li>
+                <li class="nav-item">
+                    <h3 class="h4"><a href="#tab2" class="nav-link" data-toggle="tab">タブ2</a></h3>
+                </li>
+                <li class="nav-item">
+                    <h3 class="h4"><a href="#tab3" class="nav-link" data-toggle="tab">タブ3</a></h3>
+                </li>
+                <li class="nav-item">
+                    <h3 class="h4"><a href="#tab4" class="nav-link" data-toggle="tab">タブ4</a></h3>
+                </li>
+              </ul>
+          </div>
+
+          <div class="card-body">
+            <div class="tab-content">
+              <div id="tab1" class="tab-pane active">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>金融機関名</th>
+                        <th>返済期間</th>
+                        <th>元本</th>
+                        <th>金利</th>
+                        <th>協会/プロパー</th>
+                        <th>現残高（千円）</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="debt_list">
+                      {% for item in object_list %}
+                      <tr>                   
+                        <th scope="row">{{ item.bank_name }}</th>
+                        <td>{{item.first_payment_date.year }}.{{item.first_payment_date.month }}
+                            - {{item.last_payment_date.year }}.{{item.last_payment_date.month }}
+                            ({{ item.payment_terms }}回)</td>
+                        <td>{{ item.principal|intcomma }}円</td>
+                        <td>{{ item.interest }}%</td>
+                        <td></td>
+                        <td  style="text-align:right">{{ item.get_current_0|intcomma }}</td>
+                        <td><button type="button" class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'bankuru:debt_detail' item.id %}">詳細</a></button></td>
+                        {% empty %}
+                        借入がありません。            
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    <!-- <tfoot>
+                      <tr>
+                        <th>現在残高合計</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </tfoot> -->
+                  </table>
+                </div>            
+              </div>
+              <div id="tab2" class="tab-pane">
+                <p>タブ２の内容</p>
+              </div>
+              <div id="tab3" class="tab-pane">
+                <p>タブ３の内容</p>
+              </div>
+              <div id="tab4" class="tab-pane">
+                <p>タブ４の内容</p>
+              </div>
+            </div>
+
+            <hr>
+            <a href="{% url 'bankuru:debt_create' %}" class="btn btn-primary">
+                新しい借り入れの登録</a>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="text/javascript">
+  // カンマ区切りをなくして数値として扱うためのスクリプト
+  function removeComma(value) {
+    var num = value.replace(/,/g, "");    
+    return parseInt(num);
+  }
+
+    //ページロード時に実行する関数を定義
+    window.onload = function(){
+        //ターゲットとなるテーブルを取得
+        var tbl = document.getElementsByTagName("table")[0];
+        //合計金額の初期化
+        var sumBalance = 0;
+        //次のループ内で使用する変数の宣言
+        var nowID, nowName, nextID, nextName, newRow;
+        //テーブルの1行目～最終行までに関するループ
+        for(var r = 1; r <= tbl.rows.length-1; r++){
+            //今走査中の行の ID と name を取得
+            nowID = tbl.rows[r].cells[0].innerHTML;
+            // nowName = tbl.rows[r].cells[1].innerHTML;
+            //次に走査する行が最終行以下であれば
+            if(r+1 <= tbl.rows.length-1){
+                //次に走査する行の ID と name を取得
+                nextID = tbl.rows[r+1].cells[0].innerHTML;
+                // nextName = tbl.rows[r+1].cells[1].innerHTML;
+            //それ以外であれば
+            }else{
+                //次の ID と name に長さ0の文字列でも代入
+                // nextID = nextName = "";
+                nextID = "";
+            }
+            //今走査中の行の Balance を合計金額 sumBalance に加算
+            sumBalance += parseFloat(removeComma(tbl.rows[r].cells[5].innerHTML));
+            //もし今と次の ID または name が違っていれば
+            // if(nowID != nextID || nowName != nextName){
+            if(nowID != nextID){
+                //次の行に１行挿入
+                newRow = tbl.insertRow(r+1);
+                //挿入した行にセル(列)を挿入
+                newRow.insertCell(0).innerHTML = nowID + "合計";
+                newRow.insertCell(1);
+                newRow.insertCell(2);
+                newRow.insertCell(3);
+                newRow.insertCell(4);
+                newRow.insertCell(5).innerHTML = sumBalance;
+                //合計金額 sumBalance を 0 に戻す
+                sumBalance = 0;
+                //走査行を１行進ませる(１行挿入したため)
+                r++;
+            }
+        }
+    };
+</script>
+
+{% endblock %}

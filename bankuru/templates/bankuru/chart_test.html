@@ -1,0 +1,46 @@
+{% extends 'bankuru/base.html' %}
+{% load humanize %}
+{% block title %}
+
+{% endblock %}
+
+<script>
+{% block jquery %}
+var endpoint = '/api/data/'
+$.ajax({
+  method: "GET",
+  url: endpoint,
+  success: function(data){
+    console.log(data)
+  },
+  error: function(error_data){
+    console.log("error")
+    console.log(error_data)
+  }
+})
+
+
+{% endblock %}
+</script>
+
+
+{% block content %}
+
+<section class="dashboard-counts no-padding-bottom">
+    <div class="container-fluid">
+      <div class="row bg-white has-shadow">
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+        </div>
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+        </div>
+        <!-- Item -->
+        <div class="col-xl-4 col-sm-8">
+        </div>
+      </div>
+    </div>
+</section>
+
+
+{% endblock content %}
