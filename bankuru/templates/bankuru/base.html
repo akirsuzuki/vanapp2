@@ -33,9 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
     <script src="{% static 'material_admin/js/charts-home.js' %}"></script>
-
-    <!-- オリジナルJavaScript -->
-    <script src="{% static 'original_js/debt_sort.js' %}"></script>
+   
 
   </head>
   <body>
@@ -144,17 +142,28 @@
               <h2 class="no-margin-bottom">{{ title }}</h2>
             </div>
           </header>
+
+          <!-- Django のメッセージに記録している内容があればここで表示 -->
+          {% if messages %}
+          <div class="container">
+            <div class="row">
+              <div class="col-12">
+                <div class="messages mt-3">
+                  {% for message in messages %}
+                    <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
           <!-- Dashboard Counts Section-->
 
           {% block content %}
           {% endblock %}
-
-          <script>
-            $(document).ready(function(){
-              {% block jquery %}
-              {% endblock %}
-            })
-          </script>
 
           <!-- Page Footer-->
           <footer class="main-footer">
@@ -179,6 +188,9 @@
     <script src="{% static 'material_admin/vendor/jquery-validation/jquery.validate.min.js' %}"></script>
     <!-- Main File-->
     <script src="{% static 'material_admin/js/front.js' %}"></script>
+
+    {% block script %}
+    {% endblock %}
 
   </body>
 </html>

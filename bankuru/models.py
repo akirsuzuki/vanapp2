@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+from django.db.models import Count, Sum, Avg, Min, Max
+
 
 class Debt(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -12,8 +14,6 @@ class Debt(models.Model):
     first_payment_amount = models.PositiveIntegerField("初回返済額")
     second_payment_amount = models.PositiveIntegerField("二回目返済額")
     payment_terms = models.PositiveIntegerField("返済回数")
-    # 本来payment_termsは自動計算
-    # current_balance = models.PositiveIntegerField("現在残高", default=0)
     interest = models.FloatField("金利", default=0)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,11 +22,23 @@ class Debt(models.Model):
     def __str__(self):
         return str(self.bank_name) + '-元本' + str(self.principal) + '-現在残高' + str(self.get_current(0))
 
+
     def get_month_value(self):
         y_value = self.first_payment_date.year - 1900 + 1
         m_value = self.first_payment_date.month
         month_value = y_value * 12 + m_value
         return month_value
+
+    
+    def get_last_payment_date(self):
+        return last_payment_date
+
+
+    def reverse_month_value(self):
+        month = self % 12
+        year = self - 1900 - month
+        return year, month
+
 
     def get_current(self, kagetsu):
         today = timezone.now().date()
@@ -42,7 +54,7 @@ class Debt(models.Model):
                current_balance = 0
         return current_balance
 
-    
+
     def get_current_0(self):
         balance = round(self.get_current(0) / 1000 )
         return balance
@@ -110,4 +122,8 @@ class Debt(models.Model):
     def get_current_60(self):
         balance = round(self.get_current(60) / 1000 )
         return balance
+
+
+    def get_count(self):
+        return self.objects.aggregate(Count('bank_name'))
 

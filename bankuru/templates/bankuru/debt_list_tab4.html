@@ -1,0 +1,46 @@
+{% load humanize %}
+<p>tab4</p>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>金融機関名</th>
+        <th>返済期間</th>
+        <th>元本</th>
+        <th>金利</th>
+        <th>協会/プロパー</th>
+        <th>現残高（千円）</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="debt_list">
+      {% for item in object_list %}
+      <tr>                   
+        <th scope="row">{{ item.bank_name }}</th>
+        <td>{{item.first_payment_date.year }}.{{item.first_payment_date.month }}
+            - {{item.last_payment_date.year }}.{{item.last_payment_date.month }}
+            ({{ item.payment_terms }}回)</td>
+        <td>{{ item.principal|intcomma }}円</td>
+        <td>{{ item.interest }}%</td>
+        <td></td>
+        <td  style="text-align:left">{{ item.get_current_0|intcomma }}</td>
+        <td><button type="button" class="btn btn-outline-primary btn-sm">
+                <a href="{% url 'bankuru:debt_detail' item.id %}">詳細</a></button></td>
+        {% empty %}
+        借入がありません。            
+      </tr>
+      {% endfor %}
+    </tbody>
+    <!-- <tfoot>
+      <tr>
+        <th>現在残高合計</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </tfoot> -->
+  </table>
+</div>            

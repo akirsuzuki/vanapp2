@@ -18,6 +18,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.db.models import Count, Sum, Avg, Min, Max
 
 User = get_user_model()
 
@@ -83,6 +84,7 @@ class ChartData(APIView):
 class DebtListView(ListView):
     model = Debt
     paginate_by = 10
+
     def get_queryset(self):
         return Debt.objects.filter(user=self.request.user).filter(active=True).order_by('bank_name')
 
@@ -95,7 +97,8 @@ class DebtCreateView(CreateView):
     model = Debt
     # fields = ('bank_name', ) 
     form_class = DebtForm
-    initial={'user': User.objects.get(id=1)}
+    form_class.user = get_user_model()
+    # initial={'user': User.objects.get(id=1)}
     success_url = reverse_lazy('bankuru:debt_list')
 
     def form_valid(self, form):
@@ -154,10 +157,8 @@ def get_current_total_interest(data, kagetsu):
     return current_total_interest
 
 
-def get_share_0(sefl):
-    data = Debt.objects.filter(active=True).filter(user = self.user)
-
-    return 0
+def get_share(data, kagetsu):
+    return share
 
 def get_chart_data(data, kagetsu):
     chart_data = []

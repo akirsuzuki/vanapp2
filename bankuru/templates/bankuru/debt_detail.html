@@ -41,8 +41,9 @@
               </table>
               <hr>
               <a href="{% url 'bankuru:debt_update' object.id %}" class="btn btn-primary">
-                編集</a> <a href="{% url 'bankuru:debt_delete' object.id %}" class="btn btn-danger">
-                  削除</a>
+                編集</a>
+                 <a href="{% url 'bankuru:debt_delete' object.id %}" class="btn btn-danger">
+                  削除</a> <a href="{% url 'bankuru:debt_list' %} " class="btn btn-outline-secondary">借入一覧表へ戻る</a>
             </div>
           </div>
         </div>
