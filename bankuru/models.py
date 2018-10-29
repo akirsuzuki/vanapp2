@@ -15,12 +15,28 @@ class Debt(models.Model):
     second_payment_amount = models.PositiveIntegerField("二回目返済額")
     payment_terms = models.PositiveIntegerField("返済回数")
     interest = models.FloatField("金利", default=0)
+    is_kyokai = models.BooleanField("保証協会あり", default=False)
+    is_tanpo = models.BooleanField("担保あり", default=False)
+    is_dhosho = models.BooleanField("代表者保証あり", default=False)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.bank_name) + '-元本' + str(self.principal) + '-現在残高' + str(self.get_current(0))
+
+
+    def get_thousand_principal(self):
+        thousand_principal = round(self.principal / 1000)
+        return thousand_principal
+
+    def get_thousand_monthly1(self):
+        thousand_monthly1 = round(self.first_payment_amount / 1000)
+        return thousand_monthly1
+
+    def get_thousand_monthly2(self):
+        thousand_monthly2 = round(self.second_payment_amount / 1000)
+        return thousand_monthly2
 
 
     def get_month_value(self):

@@ -1,6 +1,8 @@
 {% load humanize %}
 {% load staticfiles %}
 
+{% include 'bankuru/original_js/debt_summary.js' %}
+
 <div class="table-responsive">
   <table class="table">
     <thead>
@@ -46,6 +48,9 @@
   </table>
 </div>            
 
-{% block script %}
-<script src="{% static 'original_js/debt_summary.js' %}"></script>
-{% endblock %}
+
+
+
+
+
+

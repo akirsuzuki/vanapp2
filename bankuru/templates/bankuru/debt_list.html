@@ -15,16 +15,16 @@
           <div class="card-header d-flex align-items-center p-3">
               <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <h3 class="h4"><a href="#tab1" class="nav-link" data-toggle="tab">借入一覧</a></h3>
+                    <h3 class="h4"><a href="#tab1" class="nav-link" data-toggle="tab">全借入一覧</a></h3>
                 </li>
                 <li class="nav-item">
-                    <h3 class="h4"><a href="#tab2" class="nav-link" data-toggle="tab">タブ2</a></h3>
+                    <h3 class="h4"><a href="#tab2" class="nav-link" data-toggle="tab">金融機関別</a></h3>
                 </li>
                 <li class="nav-item">
-                    <h3 class="h4"><a href="#tab3" class="nav-link" data-toggle="tab">タブ3</a></h3>
+                    <h3 class="h4"><a href="#tab3" class="nav-link" data-toggle="tab">保全別</a></h3>
                 </li>
                 <li class="nav-item">
-                    <h3 class="h4"><a href="#tab4" class="nav-link" data-toggle="tab">タブ4</a></h3>
+                    <h3 class="h4"><a href="#tab4" class="nav-link" data-toggle="tab">金融機関・保全別</a></h3>
                 </li>
               </ul>
           </div>
@@ -32,10 +32,10 @@
           <div class="card-body">
             <div class="tab-content">
               <div id="tab1" class="tab-pane active">
-                {% include 'bankuru/debt_list_tab1.html' %}
+                {% include 'bankuru/debt_list_tab_all.html' %}
               </div>
               <div id="tab2" class="tab-pane">
-                {% include 'bankuru/debt_list_tab2.html' %}
+                {% include 'bankuru/debt_list_tab_bybank.html' %}
               </div>
               <div id="tab3" class="tab-pane">
                 {% include 'bankuru/debt_list_tab3.html' %}

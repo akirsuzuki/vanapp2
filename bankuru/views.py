@@ -1,18 +1,18 @@
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect, resolve_url
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.http import JsonResponse
 from .models import Debt, User
-from .forms import LoginForm, DebtForm
+from .forms import LoginForm, DebtForm, UserUpdateForm
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.views import (
     LoginView, LogoutView
 )
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -22,14 +22,31 @@ from django.db.models import Count, Sum, Avg, Min, Max
 
 User = get_user_model()
 
+
+class OnlyYouMixin(UserPassesTestMixin):
+    raise_exception = True
+ # 今ログインしてるユーザーのpkと、そのユーザー情報ページのpkが同じなら許可
+    def test_func(self):
+        user = self.request.user
+        return user.pk == self.kwargs['pk']
+ 
+ 
+class UserDetail(OnlyYouMixin, DetailView):
+    model = User
+    template_name = 'bankuru/user_detail.html'
+ 
+ 
+class UserUpdate(OnlyYouMixin, UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'bankuru/user_form.html'
+ 
+    def get_success_url(self):
+        return resolve_url('bankuru:user_detail', pk=self.kwargs['pk'])
+
+
 # @login_required
-class IndexView(View):
-
-    # 以下を書くことで、ログインしていない場合はログイン画面にリダイレクトされるようになる    
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)    
-
+class IndexView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         data = Debt.objects.filter(active=True).filter(user = self.request.user).order_by('-first_payment_date')[:5]
@@ -81,7 +98,7 @@ class ChartData(APIView):
         return Response(data)
 
 
-class DebtListView(ListView):
+class DebtListView(LoginRequiredMixin, ListView):
     model = Debt
     paginate_by = 10
 
@@ -89,17 +106,18 @@ class DebtListView(ListView):
         return Debt.objects.filter(user=self.request.user).filter(active=True).order_by('bank_name')
 
 
-class DebtDetailView(DetailView):
+class DebtDetailView(LoginRequiredMixin, DetailView):
     model = Debt
 
 
-class DebtCreateView(CreateView):
+class DebtCreateView(LoginRequiredMixin, CreateView):
     model = Debt
     # fields = ('bank_name', ) 
     form_class = DebtForm
     form_class.user = get_user_model()
     # initial={'user': User.objects.get(id=1)}
     success_url = reverse_lazy('bankuru:debt_list')
+    template_name = 'bankuru/debt_create_form.html'
 
     def form_valid(self, form):
         result = super().form_valid(form)
@@ -108,10 +126,11 @@ class DebtCreateView(CreateView):
         return result
     
 
-class DebtUpdateView(UpdateView):
+class DebtUpdateView(LoginRequiredMixin, UpdateView):
     model = Debt
     form_class = DebtForm
     success_url = reverse_lazy('bankuru:debt_list')
+    template_name = 'bankuru/debt_update_form.html'
 
     def form_valid(self, form):
         result = super().form_valid(form)
@@ -120,7 +139,7 @@ class DebtUpdateView(UpdateView):
         return result
 
 
-class DebtDeleteView(DeleteView):
+class DebtDeleteView(LoginRequiredMixin, DeleteView):
     model = Debt
     form_class = DebtForm
     success_url = reverse_lazy('bankuru:debt_list')

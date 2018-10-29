@@ -59,8 +59,8 @@
               </div>
               <!-- Navbar Menu -->
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-                <!-- Search-->
-                <li class="nav-item d-flex align-items-center"><a id="search" href="#"><i class="icon-search"></i></a></li>
+                <!-- Search
+                <li class="nav-item d-flex align-items-center"><a id="search" href="#"><i class="icon-search"></i></a></li> -->
                 <!-- Messages                        -->
                 <li class="nav-item dropdown"> <a id="messages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><i class="fa fa-envelope-o"></i><span class="badge bg-orange badge-corner">3</span></a>
                   <ul aria-labelledby="notifications" class="dropdown-menu">
@@ -81,11 +81,19 @@
                 </li>
                 <!-- Logout    -->
                 {% if user.is_authenticated %}
-                    <li class="nav-item">{{ user.get_username }}</li>
-                    <li class="nav-item">　　<a href="{% url 'bankuru:logout' %}">Logout</a></li>
+                <li class="nav-item dropdown"> <a href="#" data-toggle="dropdown" aria-haspopup="true" class="nav-link">{{ user.get_username }}</a>
+                  <ul class="dropdown-menu">
+                      <li><a rel="nofollow" href="#" class="dropdown-item d-flex"> 
+                          <div class="msg-body">
+                            <h3 class="h5"><a class="nav-item nav-link" href="{% url 'bankuru:user_detail' user.pk %}">マイページ</a></h3>
+                          </div>
+                      </li>
+                  </ul>
+                </li>
+                <li class="nav-item">　　<a href="{% url 'bankuru:logout' %}">Logout</a></li>
                 {% else %}
-                    <li>登録</li>
-                    <li class="nav-item"><a href="{% url 'bankuru:login' %}"> <span class="d-none d-sm-inline"><button type="button" class="btn btn-primary btn-sm">Login</button></span></a></li>
+                <li>登録</li>
+                <li class="nav-item"><a href="{% url 'bankuru:login' %}"> <span class="d-none d-sm-inline"><button type="button" class="btn btn-primary btn-sm">Login</button></span></a></li>
                 {% endif %}
 
               </ul>

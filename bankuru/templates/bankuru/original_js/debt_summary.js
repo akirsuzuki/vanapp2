@@ -9,7 +9,7 @@
   {/* //銀行別の小計を出すスクリプト */}
   window.onload = function(){
       //ターゲットとなるテーブルを取得
-      var tbl = document.getElementsByTagName("table")[0];
+      var tbl = document.getElementById('debt_bybank')[0];
       //初期化
       var sumBalance = 0;
       //次のループ内で使用する変数の宣言
