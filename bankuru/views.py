@@ -114,10 +114,13 @@ class DebtCreateView(LoginRequiredMixin, CreateView):
     model = Debt
     # fields = ('bank_name', ) 
     form_class = DebtForm
-    form_class.user = get_user_model()
-    # initial={'user': User.objects.get(id=1)}
+    # form_class.user = get_user_model()
+    # initial={'user': get_initial()}
     success_url = reverse_lazy('bankuru:debt_list')
     template_name = 'bankuru/debt_create_form.html'
+
+    # def get_initial(self):
+    #     return {'user': get_user_model()}
 
     def form_valid(self, form):
         result = super().form_valid(form)
